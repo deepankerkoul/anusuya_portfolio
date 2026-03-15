@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anusuya Som — Work Samples</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    :root {
+      --ink: #1a1410;
+      --paper: #f7f3ee;
+      --accent: #c0392b;
+      --muted: #7a6e65;
+      --rule: #d6cfc6;
+      --card-bg: #ffffff;
+      --tag-bg: #f0ebe4;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    /* ── MASTHEAD ── */
+    header {
+      border-bottom: 2px solid var(--ink);
+      padding: 2.5rem 0 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+    header::before {
+      content: '';
+      display: block;
+      height: 4px;
+      background: var(--accent);
+      position: absolute;
+      top: 0; left: 0; right: 0;
+    }
+    .masthead-label {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+    }
+    .tagline {
+      margin-top: 0.6rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 400;
+      font-style: italic;
+      font-family: 'Playfair Display', serif;
+    }
+    .header-links {
+      margin-top: 1.2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+    .header-links a {
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .header-links a:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* ── LAYOUT ── */
+    main { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+
+    /* ── ABOUT STRIP ── */
+    #about-strip {
+      border: 1px solid var(--rule);
+      border-left: 4px solid var(--accent);
+      background: var(--card-bg);
+      padding: 1.2rem 1.4rem;
+      margin-bottom: 2.8rem;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--muted);
+      display: none; /* shown by JS */
+    }
+    #about-strip strong { color: var(--ink); }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+      align-items: center;
+    }
+    .filter-bar-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-right: 0.3rem;
+    }
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      padding: 0.3rem 0.85rem;
+      cursor: pointer;
+      transition: all 0.18s;
+      border-radius: 0;
+    }
+    .filter-btn:hover { border-color: var(--ink); color: var(--ink); }
+    .filter-btn.active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--paper);
+    }
+
+    /* ── WORK COUNT ── */
+    .work-count {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      margin-bottom: 1.4rem;
+    }
+    .work-count span { color: var(--accent); font-weight: 500; }
+
+    /* ── CARDS ── */
+    #cards-grid {
+      display: grid;
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+    }
+
+    .card {
+      background: var(--card-bg);
+      padding: 1.5rem 1.6rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.6rem 1rem;
+      align-items: start;
+      transition: background 0.15s;
+      animation: fadeUp 0.35s ease both;
+    }
+    .card:hover { background: #fdfaf7; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-left { grid-column: 1; }
+    .card-right { grid-column: 2; text-align: right; align-self: start; }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--ink);
+      margin-bottom: 0.35rem;
+    }
+    .card-title a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .card-title a:hover { border-bottom-color: var(--accent); }
+
+    .card-meta {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.55rem;
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .card-meta .pub { font-weight: 500; color: var(--ink); }
+    .card-meta .dot { color: var(--rule); }
+
+    .card-desc {
+      font-size: 0.85rem;
+      line-height: 1.65;
+      color: #4a4540;
+    }
+
+    .card-tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      background: var(--tag-bg);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .card-tag.Reporting  { background: #e8f4f0; color: #2d6a55; }
+    .card-tag.Policy     { background: #eaf0f8; color: #2b4d7a; }
+    .card-tag.Research   { background: #f5edf8; color: #6b3580; }
+    .card-tag.Podcast    { background: #fff3e0; color: #a05c10; }
+    .card-tag.Video      { background: #fdecea; color: #9e2a1e; }
+    .card-tag.Editing    { background: #f0f0e8; color: #5a5a30; }
+
+    .card-link {
+      display: inline-block;
+      margin-top: 0.7rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .card-link:hover { border-bottom-color: var(--accent); }
+    .card-link::after { content: ' →'; }
+
+    /* ── NO RESULTS ── */
+    #no-results {
+      text-align: center;
+      padding: 4rem 0;
+      color: var(--muted);
+      font-style: italic;
+      font-family: 'Playfair Display', serif;
+      display: none;
+    }
+
+    /* ── ERROR / LOADING ── */
+    #status {
+      text-align: center;
+      padding: 4rem 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.75rem;
+      color: var(--rule);
+      border-top: 1px solid var(--rule);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 580px) {
+      .card { grid-template-columns: 1fr; }
+      .card-right { grid-column: 1; text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <p class="masthead-label">Portfolio</p>
+  <h1 id="site-name">Anusuya Som</h1>
+  <p class="tagline" id="site-tagline">Journalist · Copy Editor · Policy Writer</p>
+  <nav class="header-links" id="header-links">
+    <!-- populated from markdown -->
+  </nav>
+</header>
+
+<main>
+  <div id="about-strip"></div>
+
+  <div id="status">Loading work samples…</div>
+
+  <div id="content" style="display:none">
+    <div class="filter-bar" id="filter-bar">
+      <span class="filter-bar-label">Filter</span>
+      <button class="filter-btn active" data-cat="All">All</button>
+    </div>
+
+    <p class="work-count" id="work-count"></p>
+
+    <div id="cards-grid"></div>
+    <div id="no-results">No pieces in this category yet.</div>
+  </div>
+</main>
+
+<footer>Updated by editing <code>works.md</code> — hosted on GitHub Pages</footer>
+
+<script>
+// ── MARKDOWN PARSER ──────────────────────────────────────────────────────────
+// Parses works.md into structured data — no special syntax needed, just clean markdown.
+
+function parseWorks(md) {
+  const lines = md.split('\n');
+  let about = { name: '', tagline: '', email: '', linkedin: '' };
+  const works = [];
+  let current = null;
+  let inAbout = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+
+    // H1 = site name
+    if (line.startsWith('# ')) {
+      const raw = line.slice(2).trim();
+      // "Anusuya Som — Work Samples" → just the name
+      about.name = raw.split('—')[0].trim() || raw;
+    }
+
+    // ## About section
+    if (line === '## About') { inAbout = true; continue; }
+    if (line.startsWith('## ') && line !== '## About') { inAbout = false; }
+    if (line === '## Work') { inAbout = false; }
+
+    if (inAbout) {
+      if (line.startsWith("I'm") || (line.length > 0 && !line.startsWith('**') && !line.startsWith('-'))) {
+        if (!about.tagline && line.length > 5 && !line.startsWith('**')) about.tagline = line;
+      }
+      const emailMatch = line.match(/\*\*Email:\*\*\s*(.+)/);
+      if (emailMatch) about.email = emailMatch[1].trim();
+      const linkedinMatch = line.match(/\*\*LinkedIn:\*\*\s*(.+)/);
+      if (linkedinMatch) about.linkedin = linkedinMatch[1].trim();
+    }
+
+    // ### = new work entry
+    if (line.startsWith('### ')) {
+      if (current) works.push(current);
+      current = {
+        title: line.slice(4).trim(),
+        publication: '',
+        category: '',
+        date: '',
+        url: '',
+        description: ''
+      };
+      continue;
+    }
+
+    if (!current) continue;
+
+    // List items inside a work entry
+    const liMatch = line.match(/^-\s+\*\*(.+?):\*\*\s*(.*)/);
+    if (liMatch) {
+      const key = liMatch[1].toLowerCase();
+      const val = liMatch[2].trim();
+      if (key === 'publication') current.publication = val;
+      if (key === 'category')    current.category = val;
+      if (key === 'date')        current.date = val;
+      if (key === 'url')         current.url = val;
+      if (key === 'description') current.description = val;
+    }
+  }
+  if (current) works.push(current);
+  return { about, works };
+}
+
+// ── RENDER ───────────────────────────────────────────────────────────────────
+function render(data) {
+  const { about, works } = data;
+
+  // Header
+  if (about.name) document.getElementById('site-name').textContent = about.name;
+
+  const links = document.getElementById('header-links');
+  links.innerHTML = '';
+  if (about.email) {
+    const a = document.createElement('a');
+    a.href = 'mailto:' + about.email;
+    a.textContent = about.email;
+    links.appendChild(a);
+  }
+  if (about.linkedin) {
+    const a = document.createElement('a');
+    a.href = about.linkedin.startsWith('http') ? about.linkedin : 'https://' + about.linkedin;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = 'LinkedIn';
+    links.appendChild(a);
+  }
+
+  // About strip
+  if (about.tagline) {
+    const strip = document.getElementById('about-strip');
+    strip.innerHTML = about.tagline;
+    strip.style.display = 'block';
+  }
+
+  // Categories
+  const cats = ['All', ...new Set(works.map(w => w.category).filter(Boolean))];
+  const filterBar = document.getElementById('filter-bar');
+  filterBar.innerHTML = '<span class="filter-bar-label">Filter</span>';
+  cats.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn' + (cat === 'All' ? ' active' : '');
+    btn.dataset.cat = cat;
+    btn.textContent = cat;
+    btn.addEventListener('click', () => filterCards(cat));
+    filterBar.appendChild(btn);
+  });
+
+  // Cards
+  renderCards(works);
+  updateCount(works.length, works.length);
+
+  document.getElementById('status').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+}
+
+let allWorks = [];
+
+function renderCards(works) {
+  const grid = document.getElementById('cards-grid');
+  grid.innerHTML = '';
+  works.forEach((w, i) => {
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.dataset.cat = w.category;
+    card.style.animationDelay = (i * 0.04) + 's';
+
+    const titleContent = w.url && w.url !== ''
+      ? `<a href="${w.url}" target="_blank" rel="noopener">${w.title}</a>`
+      : w.title;
+
+    card.innerHTML = `
+      <div class="card-left">
+        <div class="card-title">${titleContent}</div>
+        <div class="card-meta">
+          ${w.publication ? `<span class="pub">${w.publication}</span>` : ''}
+          ${w.date ? `<span class="dot">·</span><span>${w.date}</span>` : ''}
+        </div>
+        ${w.description ? `<p class="card-desc">${w.description}</p>` : ''}
+        ${w.url ? `<a class="card-link" href="${w.url}" target="_blank" rel="noopener">Read</a>` : ''}
+      </div>
+      <div class="card-right">
+        ${w.category ? `<span class="card-tag ${w.category}">${w.category}</span>` : ''}
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function filterCards(cat) {
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.cat === cat);
+  });
+  const filtered = cat === 'All' ? allWorks : allWorks.filter(w => w.category === cat);
+  renderCards(filtered);
+  updateCount(filtered.length, allWorks.length);
+  document.getElementById('no-results').style.display = filtered.length === 0 ? 'block' : 'none';
+}
+
+function updateCount(shown, total) {
+  const el = document.getElementById('work-count');
+  el.innerHTML = shown === total
+    ? `Showing <span>${total}</span> pieces`
+    : `Showing <span>${shown}</span> of ${total} pieces`;
+}
+
+// ── FETCH & INIT ─────────────────────────────────────────────────────────────
+fetch('works.md')
+  .then(r => {
+    if (!r.ok) throw new Error('Could not load works.md');
+    return r.text();
+  })
+  .then(md => {
+    const data = parseWorks(md);
+    allWorks = data.works;
+    render(data);
+  })
+  .catch(err => {
+    document.getElementById('status').innerHTML =
+      `<strong>Could not load works.md</strong><br><small>${err.message}</small><br><br>
+       Make sure <code>works.md</code> is in the same folder as <code>index.html</code>.`;
+  });
+</script>
+</body>
+</html>
