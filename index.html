@@ -171,7 +171,7 @@
     }
 
     .card-left { grid-column: 1; }
-    .card-right { grid-column: 2; text-align: right; align-self: start; }
+    .card-right { grid-column: 2; text-align: right; align-self: start; display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: flex-end; }
 
     .card-title {
       font-family: 'Playfair Display', serif;
@@ -279,7 +279,7 @@
 <header>
   <p class="masthead-label">Portfolio</p>
   <h1 id="site-name">Anusuya Som</h1>
-  <p class="tagline" id="site-tagline">Journalist · Copy Editor · Policy Writer</p>
+  <p class="tagline" id="site-tagline">Journalist · Copy Editor · Public Policy</p>
   <nav class="header-links" id="header-links">
     <!-- populated from markdown -->
   </nav>
@@ -303,7 +303,7 @@
   </div>
 </main>
 
-<footer>Updated by editing <code>works.md</code> — hosted on GitHub Pages</footer>
+<footer>Anusuya Som, 2026</footer>
 
 <script>
 // ── MARKDOWN PARSER ──────────────────────────────────────────────────────────
@@ -347,7 +347,7 @@ function parseWorks(md) {
       current = {
         title: line.slice(4).trim(),
         publication: '',
-        category: '',
+        category: [],
         date: '',
         url: '',
         description: ''
@@ -363,7 +363,7 @@ function parseWorks(md) {
       const key = liMatch[1].toLowerCase();
       const val = liMatch[2].trim();
       if (key === 'publication') current.publication = val;
-      if (key === 'category')    current.category = val;
+      if (key === 'category')    current.category = val.split(',').map(s => s.trim()).filter(Boolean);
       if (key === 'date')        current.date = val;
       if (key === 'url')         current.url = val;
       if (key === 'description') current.description = val;
@@ -405,7 +405,7 @@ function render(data) {
   }
 
   // Categories
-  const cats = ['All', ...new Set(works.map(w => w.category).filter(Boolean))];
+  const cats = ['All', ...new Set(works.flatMap(w => w.category || []).filter(Boolean))];
   const filterBar = document.getElementById('filter-bar');
   filterBar.innerHTML = '<span class="filter-bar-label">Filter</span>';
   cats.forEach(cat => {
@@ -433,7 +433,7 @@ function renderCards(works) {
   works.forEach((w, i) => {
     const card = document.createElement('article');
     card.className = 'card';
-    card.dataset.cat = w.category;
+    card.dataset.cat = (w.category || []).join(',');
     card.style.animationDelay = (i * 0.04) + 's';
 
     const titleContent = w.url && w.url !== ''
@@ -451,7 +451,7 @@ function renderCards(works) {
         ${w.url ? `<a class="card-link" href="${w.url}" target="_blank" rel="noopener">Read</a>` : ''}
       </div>
       <div class="card-right">
-        ${w.category ? `<span class="card-tag ${w.category}">${w.category}</span>` : ''}
+        ${w.category && w.category.length > 0 ? w.category.map(c => `<span class="card-tag ${c.replace(/\s+/g, '-')}">${c}</span>`).join('') : ''}
       </div>
     `;
     grid.appendChild(card);
@@ -462,7 +462,7 @@ function filterCards(cat) {
   document.querySelectorAll('.filter-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.cat === cat);
   });
-  const filtered = cat === 'All' ? allWorks : allWorks.filter(w => w.category === cat);
+  const filtered = cat === 'All' ? allWorks : allWorks.filter(w => w.category && w.category.includes(cat));
   renderCards(filtered);
   updateCount(filtered.length, allWorks.length);
   document.getElementById('no-results').style.display = filtered.length === 0 ? 'block' : 'none';
